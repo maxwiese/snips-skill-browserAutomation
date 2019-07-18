@@ -1,0 +1,16 @@
+{
+  "name": "snips-skill-netflix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "Markus Hölzle",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "mqtt": "^3.0.0",
+    "puppeteer": "^1.18.1"
+  }
+}
