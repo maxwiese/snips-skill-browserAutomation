@@ -10,13 +10,14 @@ var client = mqtt.connect(MQTT_ADDR);
 
 const WINDOW_WIDTH = parseInt(process.env.WINDOW_WIDTH)
 const WINDOW_HEIGHT = parseInt(process.env.WINDOW_HEIGHT)
+const CRHOME_PATH = '/Program Files (x86)/Google/Chrome/Application/chrome.exe';
 
 //holding the Browser
 var browser;
 var browserIsOpen = false;
 
 async function startBrowser() {
-    browser = await puppeteer.launch({ headless: false, args: ['--start-maximized'] });
+    browser = await puppeteer.launch({ headless: false, executablePath: CRHOME_PATH, args: ['--start-maximized'] });
     browserIsOpen = true;
 }
 
@@ -65,8 +66,12 @@ async function openYoutube() {
     await page.goto('https://youtube.com', { waitUntil: 'load' });
 }
 
-
-
+async function toggleFullscreen() {
+    if (browserIsOpen) {
+        const page = (await browser.pages())[0];
+        page.keyboard.press('f');
+    }
+}
 
 client.on('connect', function () {
     console.log("Connected to " + MQTT_IP_ADDR);
@@ -76,6 +81,7 @@ client.on('connect', function () {
     client.subscribe('hermes/intent/maxwiese:openNetflix');
     client.subscribe('hermes/intent/maxwiese:openYoutube');
     client.subscribe('hermes/intent/maxwiese:closeBrowser');
+    client.subscribe('hermes/intent/maxwiese:toggleFullscreen');
 });
 
 client.on('message', function (topic, message) {
@@ -91,5 +97,8 @@ client.on('message', function (topic, message) {
     else if (topic == 'hermes/intent/maxwiese:closeBrowser') {
         console.log(`Intent detected! ${topic}`);
         closeBrowser();
+    } else if (topic == 'hermes/intent/maxwiese:toggleFullscreen') {
+        console.log(`Intent detected! ${topic}`);
+        toggleFullscreen();
     }
 });
